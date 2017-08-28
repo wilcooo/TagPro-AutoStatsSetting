@@ -22,31 +22,35 @@
 
 console.log('START: ' + GM_info.script.name + ' (v' + GM_info.script.version + ' by ' + GM_info.script.author + ')');
 
-// ### --- OPTIONS --- ### //
-
-// Please type your reserved name between the quotes.
-// DO NOT FORGET to change this when you change your reserved name in the future,
-// or it will be set back to what you typed here!!
-var reservedName = "";
-
-// Start a new session after how many minutes of not playing?
-var reset_time = 30;
-
-// Do you want to be alerted when the stat setting is changed? true/false
-var show_alert = true;
-
-// Do you want to be alerted after every game, with the last three results?
-var show_results = true;
-
-// What color should the alerts have (You'll get those in your chat-box)
-// This tool may come in handy: https://www.w3schools.com/colors/colors_picker.asp
-var alert_color = "#ffccff";
-
-// Do you want to see some debug-messages in the console
-// (don't worry if you've no idea what this is)
-var debug = false;
-
-// ### --- SNOITPO --- ### //
+////////////////////////////////////////////////////////////////////////////////////////////
+//     ### --- OPTIONS --- ###                                                            //
+////////////////////////////////////////////////////////////////////////////////////////  //
+                                                                                      //  //
+// Please type your reserved name between the quotes.                                 //  //
+// DO NOT FORGET to change this when you change your reserved name in the future,     //  //
+// or it will be set back to what you typed here!!                                    //  //
+var reservedName = "";                                                                //  //
+                                                                                      //  //
+// Start a new session after how many minutes of not playing?                         //  //
+var reset_time = 30;                                                                  //  //
+                                                                                      //  //
+// Do you want to be alerted when the stat setting is changed? true/false             //  //
+var show_alert = true;                                                                //  //
+                                                                                      //  //
+// Do you want to be alerted after every game, with the last three results?           //  //
+var show_results = true;                                                              //  //
+                                                                                      //  //
+// What color should the alerts have (You'll get those in your chat-box)              //  //
+// This tool may come in handy: https://www.w3schools.com/colors/colors_picker.asp    //  //
+var alert_color = "#ffccff";                                                          //  //
+                                                                                      //  //
+// Do you want to see some debug-messages in the console                              //  //
+// (don't worry if you've no idea what this is)                                       //  //
+var debug = false;                                                                    //  //
+                                                                                      //  //
+////////////////////////////////////////////////////////////////////////////////////////  //
+//                                                     ### --- END OF OPTIONS --- ###     //
+////////////////////////////////////////////////////////////////////////////////////////////
 
 
 //////////////////////////////////////
@@ -69,6 +73,9 @@ tagpro.ready(function () {
         var team = teamNames [ player.team ] ;                              // convert number to corresponding teamName string
         var winner = data.winner;                                           // Returns "red", "blue", or "tie" (even when custom names are set)
         var won = (team == winner);                                         // Determine if this game is won or not
+
+        if(debug)console.log('TP-ASS: And the winner is: ',winner);
+        if(debug)console.log('TP-ASS: You are part of that team: ',won);
 
         var now = new Date().getTime();                                     // Get the current time
 
