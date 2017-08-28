@@ -13,7 +13,7 @@
 // @connect      koalabeast.com
 // ==/UserScript==
 
-// Idea for a next update (I don't plan on updating this soon, but if you want you can fork this script on GitHub):
+// Idea for a next update (I don't plan on updating this soon, but if you want you can fork/pull request):
 
 //     Whether or not Stats will be turned off/on won't be based on that simple rule.
 //     Instead the win% of the last session will be compared to your R300 win%.
