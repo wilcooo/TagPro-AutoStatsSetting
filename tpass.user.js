@@ -5,20 +5,13 @@
 // @author       Ko
 // @downloadURL  https://github.com/wilcooo/TagPro-AutoStatsSetting/raw/master/tpass.user.js
 // @supportURL   https://www.reddit.com/message/compose/?to=Wilcooo
-// @website      https://www.reddit.com/
+// @website      https://www.reddit.com/r/TagPro/comments/6wlsfa/userscript_tagpro_autostatsetting_tpass/
 // @include      http://tagpro-*.koalabeast.com:*
 // @grant        GM_getValue
 // @grant        GM_setValue
 // @grant        GM_xmlhttpRequest
 // @connect      koalabeast.com
 // ==/UserScript==
-
-// Idea for a next update (I don't plan on updating this soon, but if you want you can fork/pull request):
-
-//     Whether or not Stats will be turned off/on won't be based on that simple rule.
-//     Instead the win% of the last session will be compared to your R300 win%.
-//     Only when you are positively influencing your R300 win%, stats will be turned on
-//     I plan on leaving the approach in this version as an option too.
 
 console.log('START: ' + GM_info.script.name + ' (v' + GM_info.script.version + ' by ' + GM_info.script.author + ')');
 
@@ -51,6 +44,14 @@ var debug = false;                                                              
 ////////////////////////////////////////////////////////////////////////////////////////  //
 //                                                     ### --- END OF OPTIONS --- ###     //
 ////////////////////////////////////////////////////////////////////////////////////////////
+
+
+// Idea for a next update (I don't plan on updating this soon, but if you want you can fork/pull request):
+
+//     Whether or not Stats will be turned off/on won't be based on that simple rule.
+//     Instead the win% of the last session will be compared to your R300 win%.
+//     Only when you are positively influencing your R300 win%, stats will be turned on
+//     I plan on leaving the approach in this version as an option too.
 
 
 //////////////////////////////////////
@@ -100,8 +101,8 @@ tagpro.ready(function () {
 
         GM_setValue("last_played",now);                                     // Update the last_played time
 
-        // Define how to turn stats on or off
-        function setStats(to) {
+
+        function setStats(to) {                                             // Defines how to turn stats on or off
             if ( tagpro.settings.stats == to ) return;                                       // If the current Stat setting is different from what you want it to be:
 
             if(debug)console.log('TP-ASS: Trying to change the STAT setting to '+to);
