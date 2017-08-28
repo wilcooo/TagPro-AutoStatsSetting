@@ -101,7 +101,7 @@ tagpro.ready(function () {
                 // This is where the magic starts!! (changing the Stat Setting)
                 var settings = tagpro.settings.ui;                          // We copy your current settings, because we need a fully filled form to send to the server
                                                                             // What is still missing in tagpro.settings.ui is your displayName and reservedName
-                settings.displayName = player.name;                         // We simply get your display name from your ball
+                settings.displayedName = player.name;                         // We simply get your display name from your ball
 
                 // Getting the reserved name isn't that easy:
                 if(player.auth) settings.reservedName = player.name;        // if you have a green checkmark, the script immediately knows your reserved name
