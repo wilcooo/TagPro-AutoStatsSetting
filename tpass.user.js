@@ -13,7 +13,7 @@
 // @connect      koalabeast.com
 // ==/UserScript==
 
-// Next update (ETA: unknown) will bring:
+// Idea for a next update (I don't plan on updating this soon, but if you want you can fork this script on GitHub):
 
 //     Whether or not Stats will be turned off/on won't be based on that simple rule.
 //     Instead the win% of the last session will be compared to your R300 win%.
@@ -39,6 +39,7 @@ var show_alert = true;
 var show_results = true;
 
 // What color should the alerts have (You'll get those in your chat-box)
+// This tool may come in handy: https://www.w3schools.com/colors/colors_picker.asp
 var alert_color = "#ffccff";
 
 // Do you want to see some debug-messages in the console
@@ -84,7 +85,7 @@ tagpro.ready(function () {
             if(debug)console.log('TP-ASS: A new session has started');
 
         } else {                                                            // Else (if still in the same session)
-            GM_setValue("result1",GM_getValue("result2"));                               // Move all results one place back in the 'past'
+            GM_setValue("result1",GM_getValue("result2"));                  // Move all results one place back in the 'past'
             GM_setValue("result2",GM_getValue("result3"));
             GM_setValue("result3",won);                                     // Store the latest result (of the game that just ended)
             if(debug)console.log('TP-ASS: This result is stored');
@@ -94,56 +95,56 @@ tagpro.ready(function () {
 
         // Define how to turn stats on or off
         function setStats(to) {
-            if ( tagpro.settings.stats != to ) {                            // If the current Stat setting is different from what you want it to be:
+            if ( tagpro.settings.stats == to ) return;                                       // If the current Stat setting is different from what you want it to be:
 
-                if(debug)console.log('TP-ASS: Trying to change the STAT setting to '+to);
+            if(debug)console.log('TP-ASS: Trying to change the STAT setting to '+to);
 
-                // This is where the magic starts!! (changing the Stat Setting)
-                var settings = tagpro.settings.ui;                          // We copy your current settings, because we need a fully filled form to send to the server
-                                                                            // What is still missing in tagpro.settings.ui is your displayName and reservedName
-                settings.displayedName = player.name;                         // We simply get your display name from your ball
+            // This is where the magic starts!! (changing the Stat Setting)
+            var settings = tagpro.settings.ui;                                               // We copy your current settings, because we need a fully filled form to send to the server
+            // What is still missing in tagpro.settings.ui is your displayName and reservedName
+            settings.displayedName = player.name;                                            // We simply get your display name from your ball
 
-                // Getting the reserved name isn't that easy:
-                if(player.auth) settings.reservedName = player.name;        // if you have a green checkmark, the script immediately knows your reserved name
+            // Getting the reserved name isn't that easy:
+            if(player.auth) settings.reservedName = player.name;                             // if you have a green checkmark, the script immediately knows your reserved name
 
-                else if (reservedName !== "") settings.reservedName = reservedName;                         // if you're playing unauthenticated, the name from the options (top of this script) will be used instead
+            else if (reservedName !== "") settings.reservedName = reservedName;              // if you're playing unauthenticated, the name from the options (top of this script) will be used instead
 
-                else {                                                      // if you haven't set that as well, you will be prompted at the end of the game. (only the first time)
-                    storedName = GM_getValue("storedName");
-                    if (typeof storedName != 'undefined') settings.reservedName = storedName;               // If you are prompted before, use that value.
-                    else {                                                  // If not, prompt and store the input.
-                        input = "";
-                        while (input === "") input = prompt('What is your reserved name? Be sure to get it correct! The TP-ASS script needs this to work.\n\nIf you change your reserved name in the future, don\'t forget to update it in the TP-ASS script too or it will be set back to the name you type here!!');
-                        // In case you immediately press 'enter' at the end of the game (f.e. to chat 'gg'), the prompt will just show again.
-                        settings.reservedName = input;
-                        GM_setValue("storedName",input);
-                    }
+            else {                                                                           // if you haven't set that as well, you will be prompted at the end of the game. (only the first time)
+                storedName = GM_getValue("storedName");
+                if (typeof storedName != 'undefined') settings.reservedName = storedName;    // If you are prompted before, use that value.
+                else {                                                                       // If not, prompt and store the input.
+                    input = "";
+                    while (input === "") input = prompt('What is your reserved name? Be sure to get it correct! The TP-ASS script needs this to work.\n\nIf you change your reserved name in the future, don\'t forget to update it in the TP-ASS script too or it will be set back to the name you type here!!');
+                    // In case you immediately press 'enter' at the end of the game (f.e. to chat 'gg'), the prompt will just show again.
+
+                    settings.reservedName = input;
+                    GM_setValue("storedName",input);
                 }
+            }
 
-                if(debug)console.log('TP-ASS: Using this reserved name: '+settings.reservedName);
+            if(debug)console.log('TP-ASS: Using this reserved name: '+settings.reservedName);
 
-                settings.stats = to;                                        // The only thing we change in the settings is the stats, to whatever this functions argument is
+            settings.stats = to;                                                              // The only thing we change in the settings is the stats, to whatever this functions argument is
 
-                if(debug)console.log('TP-ASS: Got the required settings, sending a POST request now...');
+            if(debug)console.log('TP-ASS: Got the required settings, sending a POST request now...');
 
-                // Now that we have all settings, we can 'post' it to the server. (This is what happens when you click 'save settings' on the TagPro profile page)
-                GM_xmlhttpRequest ( {
-                    method:     "POST",
-                    url:        'http://'+document.location.hostname+'/profile/update',       // Settings should be send to the same server, so you'll be logged in for sure.
-                    data:       jQuery.param(settings),                                       // jQuery.param makes it a string: "stats=false&reservedName=Ko&..."
-                    headers: {"Content-Type": "application/x-www-form-urlencoded"},           // No idea why this is needed, but it doesn't work without it.
-                    onload:     function(r){
-                        // 'r' is the response that we get back from the TP server, lets do some error handling with it:
-                        if(r.response.error) chat_alert('Your Stat setting could not be saved due to the following error:\n'+e.error);     // Alert it when something is wrong
-                        if(r.response.success && show_alert) {
-                            var textify = {true: "on", false: "off" };                          // Translation from Boolean to the words on/off
-                            chat_alert("Stats have been turned " + textify[to] + " for next game!");              // Alert when succeeded!
-                        } if(debug)console.log('TP-ASS: Response of the POST request: ', r);
+            // Now that we have all settings, we can 'post' it to the server. (This is what happens when you click 'save settings' on the TagPro profile page)
+            GM_xmlhttpRequest ( {
+                method:     "POST",
+                url:        'http://'+document.location.hostname+'/profile/update',           // Settings should be send to the same server, so you'll be logged in for sure.
+                data:       jQuery.param(settings),                                           // jQuery.param makes it a string: "stats=false&reservedName=Ko&..."
+                headers: {"Content-Type": "application/x-www-form-urlencoded"},               // No idea why this is needed, but it doesn't work without it.
+                onload:     function(r){
+                    // 'r' is the response that we get back from the TP server, lets do some error handling with it:
+                    if(r.response.error) chat_alert('Your Stat setting could not be saved due to the following error:\n'+e.error);     // Alert it when something is wrong
+                    if(r.response.success && show_alert) {
+                        var textify = {true: "on", false: "off" };                            // Translation from Boolean to the words on/off
+                        chat_alert("Stats have been turned " + textify[to] + " for next game!");          // Alert when succeeded!
+                    } if(debug)console.log('TP-ASS: Response of the POST request: ', r);
                 }});
 
-                // We did the magic!!
+            // We did the magic!!
 
-            }
         }
 
         var number_of_wins = GM_getValue("result1") + GM_getValue("result2") + GM_getValue("result3");      // Count the number of wins of those last 3 results
