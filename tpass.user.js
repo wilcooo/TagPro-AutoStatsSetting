@@ -69,7 +69,7 @@ tagpro.ready(function () {
         if (tagpro.spectator) return;                                       // Spectated game results should NOT affect this script!
 
         var player = tagpro.players[tagpro.playerId];                       // Your own ball's object
-        var teamNames = ["red","blue"];                                     // Because tagpro.players[n].team returns a number, and I need to compare it to a string
+        var teamNames = [null,"red","blue"];                                // Because tagpro.players[n].team returns a number, and I need to compare it to a string
         var team = teamNames [ player.team ] ;                              // convert number to corresponding teamName string
         var winner = data.winner;                                           // Returns "red", "blue", or "tie" (even when custom names are set)
         var won = (team == winner);                                         // Determine if this game is won or not
