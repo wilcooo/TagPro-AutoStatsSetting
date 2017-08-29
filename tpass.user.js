@@ -24,6 +24,13 @@ console.log('START: ' + GM_info.script.name + ' (v' + GM_info.script.version + '
 // or it will be set back to what you typed here!!                                    //  //
 var reservedName = "";                                                                //  //
                                                                                       //  //
+// How many wins in a row should turn stats back on? (Max. 3 at the moment)           //  //
+var wins_in_a_row = 3;                                                                //  //
+                                                                                      //  //
+// What is the mininum acceptable amount of games to win out of 3?                    //  //
+// If you win less than that, stats are turned off.                                   //  //
+var minimum_wins = 2;                                                                 //  //
+                                                                                      //  //
 // Start a new session after how many minutes of not playing?                         //  //
 var reset_time = 30;                                                                  //  //
                                                                                       //  //
@@ -45,13 +52,22 @@ var debug = false;                                                              
 //                                                     ### --- END OF OPTIONS --- ###     //
 ////////////////////////////////////////////////////////////////////////////////////////////
 
+/*
 
-// Idea for a next update (I don't plan on updating this soon, but if you want you can fork/pull request):
+UPDATE LOG:
 
-//     Whether or not Stats will be turned off/on won't be based on that simple rule.
-//     Instead the win% of the last session will be compared to your R300 win%.
-//     Only when you are positively influencing your R300 win%, stats will be turned on
-//     I plan on leaving the approach in this version as an option too.
+    0.2:
+        Two new options; you can now specify at what number of wins stats should be turned on and off
+
+
+Idea for a future update (I don't plan on updating this soon, but if you want you can fork/pull request):
+
+    Whether or not Stats will be turned off/on won't be based on that simple rule.
+    Instead the win% of the last session will be compared to your R300 win%.
+    Only when you are positively influencing your R300 win%, stats will be turned on
+    I plan on leaving the approach in this version as an option too.
+
+*/
 
 
 //////////////////////////////////////
@@ -63,6 +79,12 @@ function chat_alert(message) {                                              // T
 }
 
 tagpro.ready(function () {
+
+    if (wins_in_a_row < minimum_wins) {      // If this is true, stats will be turned on and off simultaneously in some cases
+        chat_alert("You messed up the options, wins_in_a_row cannot be smaller than minimum_wins!! This script is terminating.");
+        return;
+    }
+
     tagpro.socket.on('end',function(data) {                                 // This script only runs at the end of a game.
 
         if(debug)console.log('TP-ASS: Game has ended, starting the script');
@@ -156,9 +178,12 @@ tagpro.ready(function () {
         }
 
         var number_of_wins = GM_getValue("result1") + GM_getValue("result2") + GM_getValue("result3");      // Count the number of wins of those last 3 results
-        if (number_of_wins < 2) setStats(false);                                                            // Set stats off when <2 wins
-        if (number_of_wins > 2) setStats(true);                                                             // Set stats on when 3 wins
-        // Note: if 2 of the last 3 games are won: the stat setting isn't changed.
+        if (number_of_wins < minimum_wins) setStats(false);                                                 // Set stats off when <2 wins
+
+        var wins_streak = ( GM_getValue("result3") * GM_getValue("result2") + GM_getValue("result2") ) * GM_getValue("result1") + GM_getValue("result1")  // Do some fancy math to get your current win streak
+        if (wins_streak >= wins_in_a_row) setStats(true);                                                   // Stats on when enough wins
+
+        // Note: if 2 of the last 3 games are won: the stat setting isn't changed. (With the default options)
 
         if (show_results) {
             var iconify = {true: "☀ ", false: "· " };                   // Translation from Boolean to these icons
