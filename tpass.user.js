@@ -39,6 +39,7 @@ var reset_time = 30;                                                            
                                                                                       //  //
 // Do you want to be alerted when the stat setting is changed? true/false             //  //
 var show_alert = true;                                                                //  //
+// Currently not working, and I've no idea why. Help appreciated :)                   //  //
                                                                                       //  //
 // Do you want to be alerted after every game, with the last three results?           //  //
 var show_results = true;                                                              //  //
