@@ -31,6 +31,9 @@ var wins_in_a_row = 3;                                                          
 // If you win less than that, stats are turned off.                                   //  //
 var minimum_wins = 2;                                                                 //  //
                                                                                       //  //
+// Note: With the default options, winning 2 of the last 3 games keeps the stat       //  //
+// setting unchanged                                                                  //  //
+                                                                                      //  //
 // Start a new session after how many minutes of not playing?                         //  //
 var reset_time = 30;                                                                  //  //
                                                                                       //  //
