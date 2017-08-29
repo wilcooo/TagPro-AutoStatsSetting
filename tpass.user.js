@@ -183,7 +183,7 @@ tagpro.ready(function () {
         var number_of_wins = GM_getValue("result1") + GM_getValue("result2") + GM_getValue("result3");      // Count the number of wins of those last 3 results
         if (number_of_wins < minimum_wins) setStats(false);                                                 // Set stats off when <2 wins
 
-        var wins_streak = ( GM_getValue("result1") * GM_getValue("result2") + GM_getValue("result2") ) * GM_getValue("result3") + GM_getValue("result3")  // Do some fancy math to get your current win streak
+        var wins_streak = ( GM_getValue("result1") * GM_getValue("result2") + GM_getValue("result2") ) * GM_getValue("result3") + GM_getValue("result3");  // Do some fancy math to get your current win streak
         if (wins_streak >= wins_in_a_row) setStats(true);                                                   // Stats on when enough wins
 
         // Note: if 2 of the last 3 games are won: the stat setting isn't changed. (With the default options)
